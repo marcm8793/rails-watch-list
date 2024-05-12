@@ -1,4 +1,29 @@
-<h1>Lists</h1>
-<% @lists.each do |list| %>
-  <h2><%= link_to list.name, list %></h2>
-<% end %>
+<div class="cover mb-4 d-flex align-items-center justify-content-center">
+  <div class="text-center text-white px-4 py-5"
+       style="background-image: url('https://plus.unsplash.com/premium_photo-1661476586623-1db68d015e45?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE2fHx8ZW58MHx8fHx8');
+              height:30vh; width:100vw;
+              background-position: center;
+              background-size: cover;
+              border-radius: 5px;
+              ">
+    <h1 class="text-danger fw-bolder"">Save all your favorite movies in one place!</h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="mb-0">My Lists</h3>
+    <%= link_to "Create a movie list", new_list_path, class: "btn btn-primary" %>
+  </div>
+  <div class="row">
+    <% @lists.each do |list| %>
+       <div class="co-12 col-sm-6 col-md-4 mb-3">
+        <%= link_to list_path(list), class:"text-decoration-none" do %>
+          <div class="card-category text-danger">
+            <%= list.name %> 🎬
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
