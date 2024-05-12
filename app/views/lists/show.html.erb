@@ -18,9 +18,10 @@
   <div class="row my-2">
     <% @list.bookmarks.each do |bookmark| %>
       <div class="col-12 col-sm-6 mb-4">
-        <div class="card">
+        <div class="card shadow-lg">
+          <%= image_tag(bookmark.movie.poster_url, alt: bookmark.movie.title, class: 'card-img-top', height: "200") %>
           <div class="card-body">
-            <strong><%= bookmark.movie.title %><span class="text-muted font-weight-normal">•</span></strong>
+            <strong><%= bookmark.movie.title %><span class="text-muted font-weight-normal">•<%= number_with_precision(bookmark.movie.rating, precision: 1) %></span></strong>
             <div class="d-flex align-items-end justify-content-between pt-4">
               <div>
                 <i class="fas fa-quote-left me-2"></i><small class="flex-grow-1"><%= bookmark.comment %></small>
@@ -51,7 +52,7 @@
 
       <%= simple_form_for [@list, @bookmark] do |f| %>
         <div class="modal-body">
-          <%= f.association :movie, collection: Movie.where.not(id: @list.movies.pluck(:id)) , prompt: "Select a movie", input_html: { data: { controller: "tom-select" } } %>
+          <%= f.association :movie, collection: Movie.where.not(id: @list.movies.pluck(:id)) , prompt: "Select a movie" %>
           <%= f.input :comment, placeholder: "Enter a comment about the movie" %>
         </div>
         <div class="modal-footer">
@@ -59,6 +60,7 @@
           <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Back</button>
         </div>
       <% end %>
+
     </div>
   </div>
 </div>
