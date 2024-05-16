@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   root to: "lists#index"
   resources :lists, only: [:index, :show, :new, :create, :destroy] do
     resources :bookmarks, only: [:new, :create]
+    get 'movies/search', to: 'movies#search', on: :collection
+    resources :movies, only: [:create]
   end
   resources :bookmarks, only: [:destroy]
+  resources :movies, only: [:new, :show]
+
 end

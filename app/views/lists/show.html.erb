@@ -1,5 +1,8 @@
 <div class="position-relative">
-  <div class="card-category card-large">
+  <div class="card-category card-large"
+       style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(<%= @list.photo.attached? ? cl_image_path(@list.photo.key)
+               : asset_path('movie.jpg') %>)"
+  >
     <h1><%= @list.name %></h1>
   </div>
   <span class="movie-tag"><%= pluralize(@list.movies.size, "movie") %></span>
@@ -38,9 +41,6 @@
 </div>
 
 
-
-
-
 <div class="modal fade" id="new_movie_modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -64,3 +64,87 @@
     </div>
   </div>
 </div>
+
+
+
+
+<div class="modal fade" id="new_movie_modal-2" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+        <h5 class="modal-title" id="addMovieModalLabel">Add Movie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= simple_form_for [@list, @list.bookmarks.build], url: list_bookmarks_path(@list), method: :post, html: { id: "movie-form" } do |f| %>
+          <div class="form-group">
+            <%= label_tag :query, "Search for a movie" %>
+            <%= text_field_tag :query, nil, class: "form-control", id: "movie-search" %>
+            <button type="button" id="search-button">Search</button>
+          </div>
+
+          <div id="movie-details" style="display: none;">
+            <%= hidden_field_tag :movie_id, nil, id: "movie-id" %>
+            <%= hidden_field_tag :movie_title, nil, id: "movie-title" %>
+            <%= hidden_field_tag :movie_overview, nil, id: "movie-overview" %>
+            <%= hidden_field_tag :movie_rating, nil, id: "movie-rating" %>
+            <%= hidden_field_tag :movie_poster_url, nil, id: "movie-poster-url" %>
+
+            <h3 id="movie-title-display"></h3>
+            <p id="movie-overview-display"></p>
+            <p id="movie-rating-display"></p>
+            <img id="movie-poster-display" src="" alt="Movie Poster" style="max-width: 100px;" />
+          </div>
+
+          <%= f.input :comment, placeholder: "Enter a comment about the movie" %>
+          <%= f.submit "Save Movie" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const searchButton = document.getElementById('search-button');
+  const queryInput = document.getElementById('movie-search');
+
+  searchButton.addEventListener('click', function() {
+    const query = queryInput.value;
+    if (query) {
+      fetchMovieDetails(query);
+    }
+  });
+
+  function fetchMovieDetails(query) {
+    const url = `http://www.omdbapi.com/?t=${encodeURIComponent(query)}&apikey=ed0fae3f`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data) {
+          displayMovieDetails(data);
+        } else {
+          console.error('Error fetching movie details');
+        }
+      })
+      .catch(error => console.error('Error fetching movie details:', error));
+  }
+
+  function displayMovieDetails(movie) {
+    document.getElementById('movie-details').style.display = 'block';
+
+    document.getElementById('movie-title').value = movie.Title;
+    document.getElementById('movie-overview').value = movie.overview;
+    document.getElementById('movie-rating').value = movie.rating;
+    document.getElementById('movie-poster-url').value = movie.poster_url;
+
+    document.getElementById('movie-title-display').innerText = movie.Title;
+    document.getElementById('movie-overview-display').innerText = movie.overview;
+    document.getElementById('movie-rating-display').innerText = `Rating: ${movie.rating}`;
+    document.getElementById('movie-poster-display').src = movie.poster_url;
+  }
+});
+
+</script>
